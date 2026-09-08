@@ -14,6 +14,6 @@ tData computeStates(const Af af, tData currentStates, Symbol sym);
 
 int obtenerOCrearIndice(Af afd, tData destSet, tData** subConjuntos, tData** estadosAFD, int* numConjuntos);
 
-str getStateName(int id);
+Str getStateName(int id);
 
 #endif

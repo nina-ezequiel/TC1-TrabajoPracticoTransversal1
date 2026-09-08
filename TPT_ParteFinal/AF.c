@@ -128,14 +128,12 @@ tData getDestinations(const Af af, State from, Symbol sym) {
 	return NULL;
 }
 
-static int acceptRecursive(const Af af, tData currentStates, str string) {
+static int acceptRecursive(const Af af, tData currentStates, Str string) {
 	if (string == NULL) {
-		tData state = tData_getFirst(currentStates);
-		while (state) {
-			if (pertainSet(state, af->F)) return 1;
-			state = tData_getNext(state);
-		}
-		return 0;
+		tData inter = intersectionSet(currentStates, getFinals(af));
+        int result = (inter != NULL && tData_getFirst(inter) != NULL);
+        free_tData(inter);
+        return result;
 	}
 	char symBuf[2] = {str_getFirst(string), '\0'};
 	Symbol sym = newNodeStrHard(loadStr2(symBuf));
@@ -146,7 +144,7 @@ static int acceptRecursive(const Af af, tData currentStates, str string) {
 	return result;
 }
 
-int acceptString(const Af af, str cadena) {
+int acceptString(const Af af, Str cadena) {
 	if (!af || !cadena) 
 		return 0;
 	tData startState = newEmptyNodeSet();
@@ -157,7 +155,7 @@ int acceptString(const Af af, str cadena) {
 }
 
 int acceptHardcoded(const Af af, const char* cadena) {
-	str s = loadStr2(cadena);
+	Str s = loadStr2(cadena);
 	int res = acceptString(af, s);
 	freeStr(&s);
 	return res;
@@ -165,7 +163,7 @@ int acceptHardcoded(const Af af, const char* cadena) {
 
 int acceptFromConsole(const Af af) {
 	printf("\nIngrese la cadena a evaluar: ");
-	str s = loadStr();
+	Str s = loadStr();
 	int res = acceptString(af, s);
 	freeStr(&s);
 	return res;

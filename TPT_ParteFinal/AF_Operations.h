@@ -5,7 +5,7 @@
 
 // Parsea una linea de texto (str) en una estructura DeltaEntry.
 // Formato: "origen,simbolo,destino" o "origen,simbolo,dest1,dest2,...,dest_n".
-DeltaEntry parseDeltaEntry(str linea);
+DeltaEntry parseDeltaEntry(Str linea);
 
 // Fusiona una nueva transicion en un arreglo dinamico de transiciones.
 void addTransition(DeltaEntry** delta, int* deltaCount, DeltaEntry newEntry);

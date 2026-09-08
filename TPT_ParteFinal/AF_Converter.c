@@ -19,7 +19,7 @@ static Af crearAFDVacioConAlfabeto(const Af afnd) {
 /* ------------------------------------------------------------
 * Genera el nombre de un estado del AFD a partir de su ID (p0, p1, ...).
 * ------------------------------------------------------------ */
-str getStateName(int id) {
+Str getStateName(int id) {
 	char buf[10];
 	sprintf(buf, "p%d", id);
 	return loadStr2(buf);
@@ -35,7 +35,7 @@ static void inicializarArreglos(Af afd, const Af afnd, tData** subConjuntos, tDa
 	(*subConjuntos)[0] = startSet;
 	*numConjuntos = 1;
 	
-	str name0 = getStateName(0);
+	Str name0 = getStateName(0);
 	tData state0 = newNodeStrHard(name0);
 	freeStr(&name0);
 	AF_addState(afd, state0);
@@ -81,7 +81,7 @@ int obtenerOCrearIndice(Af afd, tData destSet, tData** subConjuntos, tData** est
 	(*subConjuntos)[idx] = destSet;
 	(*numConjuntos)++;
 	
-	str newName = getStateName(idx);
+	Str newName = getStateName(idx);
 	tData newState = newNodeStrHard(newName);
 	freeStr(&newName);
 	AF_addState(afd, newState);
@@ -132,6 +132,7 @@ static void liberarArreglos(tData* subConjuntos, tData* estadosAFD, int numConju
 /* ============================================================
 * FUNCION PRINCIPAL: AFNDtoAFD
 * ============================================================ */
+
 Af AFNDtoAFD(const Af afnd) {
 	if (afnd == NULL) return NULL;
 	
@@ -155,10 +156,12 @@ Af AFNDtoAFD(const Af afnd) {
 			}
 			sigmaNode = tData_getNext(sigmaNode);
 		}
-	}
-	
+	}	
 	marcarFinalesAFD(afd, afnd, subConjuntos, estadosAFD, numConjuntos);
 	liberarArreglos(subConjuntos, estadosAFD, numConjuntos);
-	
+
 	return afd;
 }
+
+
+

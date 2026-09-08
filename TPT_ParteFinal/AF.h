@@ -41,7 +41,7 @@ tData getDestinations(const Af af, State from, Symbol sym);
 
 // Consultar determinismo y aceptacion
 int isDeterministic(const Af af);
-int acceptString(const Af af, str cadena);
+int acceptString(const Af af, Str cadena);
 int acceptHardcoded(const Af af, const char* cadena);
 int acceptFromConsole(const Af af);
 

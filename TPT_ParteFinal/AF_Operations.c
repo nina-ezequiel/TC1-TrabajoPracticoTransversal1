@@ -2,24 +2,24 @@
 #include "AF_Converter.h"
 
 /* -------------------- parseDeltaEntry ------------------- */
-DeltaEntry parseDeltaEntry(str s) {
+DeltaEntry parseDeltaEntry(Str s) {
 	DeltaEntry entry = {NULL, NULL, NULL};
 	if (s == NULL) return entry;
 	
 	// Origen (antes de la 1a coma)
-	str fromStr = beforeToken(s, ',');
+	Str fromStr = beforeToken(s, ',');
 	if (fromStr == NULL) 
 		return entry;
 	entry.from = newNodeStrHard(fromStr);
 	freeStr(&fromStr);
 	
 	// Simbolo (entre 1er y 2da coma)
-	str afterFirst = afterToken(s, ',');
+	Str afterFirst = afterToken(s, ',');
 	if (afterFirst == NULL) {
 		free_tData(entry.from);
 		return entry;
 	}
-	str symStr = beforeToken(afterFirst, ',');
+	Str symStr = beforeToken(afterFirst, ',');
 	if (symStr == NULL) {
 		free_tData(entry.from);
 		freeStr(&afterFirst);
@@ -29,7 +29,7 @@ DeltaEntry parseDeltaEntry(str s) {
 	freeStr(&symStr);
 	
 	// Destinos (despues de la 2da coma)
-	str destPart = afterToken(afterFirst, ',');
+	Str destPart = afterToken(afterFirst, ',');
 	freeStr(&afterFirst);
 	if (destPart == NULL) {
 		free_tData(entry.from);
@@ -68,11 +68,11 @@ void addTransition(DeltaEntry** delta, int* deltaCount, DeltaEntry newEntry) {
 /* -------------------- readTransitions ------------------- */
 void readTransitions(DeltaEntry** delta, int* deltaCount, tData Q_set, tData Sigma_set, State* q0, tData* F) {
 	int first = 1;
-	str finStr = loadStr2("fin");
+	Str finStr = loadStr2("fin");
 	while (1) {
 		
 		printf("d(estado,simbolo) = ");
-		str s = loadStr();
+		Str s = loadStr();
 		if (equalStr(s, finStr)) {
 			freeStr(&s);
 			break;
@@ -112,7 +112,7 @@ void readTransitions(DeltaEntry** delta, int* deltaCount, tData Q_set, tData Sig
 	// Leer estados finales
 	while (1) {
 		printf("\nAhora ingrese el/los estado/s final/es (separados por comas): ");
-		str fStr = loadStr();
+		Str fStr = loadStr();
 		tData Fset = strToSetToken(fStr, ',');
 		freeStr(&fStr);
 		if (inclusionSet(Fset, Q_set)) {
@@ -201,7 +201,7 @@ Af reverseAF(const Af af) {
             AF_addSymbol(emptyAfd, sigmaNode);
             sigmaNode = tData_getNext(sigmaNode);
         }
-        str initName = loadStr2("q0");
+        Str initName = loadStr2("q0");
         tData initState = newNodeStrHard(initName);
         freeStr(&initName);
         AF_addState(emptyAfd, initState);

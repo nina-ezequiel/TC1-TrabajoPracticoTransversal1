@@ -1,4 +1,7 @@
 #include "Tree.h"
+#include "String.h"
+#include <string.h>
+#include <stdlib.h>
 
 /* ------------------------------------------------------------ */
 
@@ -9,7 +12,7 @@ tData copy_tData(tData original) {
 	switch(original->nodeType) {
 		
 	case STR:
-		copia->str = copyStr(original->str);
+		copia->Str = copyStr(original->Str);
 		break;
 		
 	case LIST:
@@ -44,7 +47,7 @@ int equal_tData(tData elem1, tData elem2) {
 	switch(elem1->nodeType) {
 		
 	case STR:
-		return equalStr(elem1->str, elem2->str);
+		return equalStr(elem1->Str, elem2->Str);
 		
 	case LIST: {
 		tData actual1 = elem1->data;
@@ -78,7 +81,7 @@ tData newNodeTree(int tipo) {
 
 tData newNodeStr() {
 	printf("Ingrese el string: ");
-	str valor = loadStr();
+	Str valor = loadStr();
 	tData nvo = newNodeTree(STR);
 	if (nvo == NULL || valor == NULL) {
 		freeStr(&valor);
@@ -86,7 +89,7 @@ tData newNodeStr() {
 			free(nvo);
 		return NULL;
 	}
-	nvo->str = valor;
+	nvo->Str = valor;
 	return nvo;
 }
 
@@ -226,7 +229,7 @@ void printDataRecursive(tData data) {
 		firstElement = 0;
 		switch(data->nodeType) {
 		case STR:
-			printStr(data->str);
+			printStr(data->Str);
 			break;
 		case LIST:
 			printf("[");
@@ -258,7 +261,7 @@ void free_tData(tData data) {
 		data = data->next;
 		switch(temp->nodeType) {
 		case STR:
-			freeStr(&(temp->str));
+			freeStr(&(temp->Str));
 			break;
 		case LIST:
 		case SET:
@@ -310,7 +313,7 @@ tData unionSet(tData set1, tData set2) {
 		append(&(resultado->data), copia);
 		actual = actual->next;
 	}
-	// Agregar elementos de set2 que no estén ya
+	// Agregar elementos de set2 que no estï¿½n ya
 	actual = (set2 != NULL) ? set2->data : NULL;
 	while (actual != NULL) {
 		tData copia = copy_tData(actual);
@@ -389,10 +392,10 @@ tData removeFromSet(tData set, tData elemento) {
 
 /* ------------------------------------------- */
 
-tData newNodeStrHard(str valor) {
+tData newNodeStrHard(Str valor) {
 	tData nvo = newNodeTree(STR);
 	if (nvo != NULL) {
-		nvo->str = copyStr(valor);
+		nvo->Str = copyStr(valor);
 	}
 	return nvo;
 }
@@ -483,7 +486,7 @@ tData strToList(tData string) {
 	tData lista = newEmptyNodeList();
 	if (lista == NULL)
 		return NULL;
-	str actual = string->str;
+	Str actual = string->Str;
 	while (actual != NULL) {
 		char caracter[2] = {actual->car, '\0'};
 		tData charStr = newNodeStrHard(loadStr2(caracter));
@@ -496,12 +499,12 @@ tData strToList(tData string) {
 tData listToStr(tData list) {
 	if (list == NULL || list->nodeType != LIST)
 		return NULL;
-	str resultadoStr = createStr();
+	Str resultadoStr = createStr();
 	tData actual = list->data;
 	while (actual != NULL) {
 		if (actual->nodeType == STR) {
-			str temp = copyStr(actual->str);
-			str nueva = concatStr(resultadoStr, temp);
+			Str temp = copyStr(actual->Str);
+			Str nueva = concatStr(resultadoStr, temp);
 			freeStr(&resultadoStr);
 			freeStr(&temp);
 			resultadoStr = nueva;
@@ -509,7 +512,7 @@ tData listToStr(tData list) {
 		actual = actual->next;
 	}
 	tData resultado = newNodeTree(STR);
-	resultado->str = resultadoStr;
+	resultado->Str = resultadoStr;
 	return resultado;
 }
 
@@ -519,7 +522,7 @@ tData strToSet(tData string) {
 	tData conjunto = newEmptyNodeSet();
 	if (conjunto == NULL)
 		return NULL;	
-	str actual = string->str;
+	Str actual = string->Str;
 	while (actual != NULL) {
 		char caracter[2] = {actual->car, '\0'};
 		tData charStr = newNodeStrHard(loadStr2(caracter));
@@ -532,12 +535,12 @@ tData strToSet(tData string) {
 tData setToStr(tData set) {
 	if (set == NULL || set->nodeType != SET)
 		return NULL;
-	str resultadoStr = createStr();  // string vacío
+	Str resultadoStr = createStr();  // string vacï¿½o
 	tData actual = set->data;
 	while (actual != NULL) {
 		if (actual->nodeType == STR) {
-			str temp = copyStr(actual->str);
-			str nueva = concatStr(resultadoStr, temp);
+			Str temp = copyStr(actual->Str);
+			Str nueva = concatStr(resultadoStr, temp);
 			freeStr(&resultadoStr);
 			freeStr(&temp);
 			resultadoStr = nueva;
@@ -545,24 +548,24 @@ tData setToStr(tData set) {
 		actual = actual->next;
 	}
 	tData resultado = newNodeTree(STR);
-	resultado->str = resultadoStr;
+	resultado->Str = resultadoStr;
 	return resultado;
 }
 
 // Convierte una cadena "elem1,elem2,elem3" en un conjunto (SET) de strings
-tData strToSetToken(str s, char token) {
+tData strToSetToken(Str s, char token) {
 	tData set = newEmptyNodeSet();
 	if (set == NULL || s == NULL) 
 		return set;
-	str resto = copyStr(s);
+	Str resto = copyStr(s);
 	while (resto != NULL) {
-		str before = beforeToken(resto, token);
+		Str before = beforeToken(resto, token);
 		if (before != NULL) {
 			tData elem = newNodeStrHard(before);
 			insert_set(&(set->data), elem);
 			freeStr(&before);
 		}
-		str nuevoResto = afterToken(resto, token);
+		Str nuevoResto = afterToken(resto, token);
 		freeStr(&resto);
 		resto = nuevoResto;
 	}
@@ -575,10 +578,10 @@ int tData_getType(tData d) {
 	return d->nodeType;
 }
 
-str tData_getStr(tData d) {
+Str tData_getStr(tData d) {
 	if (d == NULL || d->nodeType != STR) 
 		return NULL;
-	return d->str;
+	return d->Str;
 }
 
 tData tData_getFirst(tData d) {
@@ -599,4 +602,100 @@ void tData_addToSet(tData set, tData elem) {
 	if (set == NULL || elem == NULL) 
 		return;
 	insert_set(&(set->data), elem);
+}
+
+/* -------------------- Funciones auxiliares para parseTree -------------------- */
+
+static tData parseElement(const char* str, int* pos) {
+    while (str[*pos] == ' ' || str[*pos] == '\t' || str[*pos] == '\n') (*pos)++;
+    char c = str[*pos];
+    if (c == '\0') return NULL;
+
+    if (c == '{') {
+        (*pos)++;
+        tData setNode = newEmptyNodeSet();
+        if (!setNode) return NULL;
+        while (str[*pos] != '}' && str[*pos] != '\0') {
+            tData elem = parseElement(str, pos);
+            if (elem) {
+                insert_set(&(setNode->data), elem);
+            } else {
+                free_tData(setNode);
+                return NULL;
+            }
+            while (str[*pos] == ' ' || str[*pos] == '\t' || str[*pos] == '\n') (*pos)++;
+            if (str[*pos] == ',') {
+                (*pos)++;
+                while (str[*pos] == ' ' || str[*pos] == '\t' || str[*pos] == '\n') (*pos)++;
+            } else {
+                break;
+            }
+        }
+        if (str[*pos] == '}') {
+            (*pos)++;
+            return setNode;
+        } else {
+            free_tData(setNode);
+            return NULL;
+        }
+    } else if (c == '[') {
+        (*pos)++;
+        tData listNode = newEmptyNodeList();
+        if (!listNode) return NULL;
+        while (str[*pos] != ']' && str[*pos] != '\0') {
+            tData elem = parseElement(str, pos);
+            if (elem) {
+                append(&(listNode->data), elem);
+            } else {
+                free_tData(listNode);
+                return NULL;
+            }
+            while (str[*pos] == ' ' || str[*pos] == '\t' || str[*pos] == '\n') (*pos)++;
+            if (str[*pos] == ',') {
+                (*pos)++;
+                while (str[*pos] == ' ' || str[*pos] == '\t' || str[*pos] == '\n') (*pos)++;
+            } else {
+                break;
+            }
+        }
+        if (str[*pos] == ']') {
+            (*pos)++;
+            return listNode;
+        } else {
+            free_tData(listNode);
+            return NULL;
+        }
+    } else {
+        int start = *pos;
+        while (str[*pos] != '\0' && str[*pos] != ',' && str[*pos] != '{' &&
+               str[*pos] != '}' && str[*pos] != '[' && str[*pos] != ']' &&
+               str[*pos] != ' ' && str[*pos] != '\t' && str[*pos] != '\n') {
+            (*pos)++;
+        }
+        int len = *pos - start;
+        if (len == 0) return NULL;
+        char* substr = (char*)malloc(len + 1);
+        if (!substr) return NULL;
+        strncpy(substr, str + start, len);
+        substr[len] = '\0';
+        Str s = loadStr2(substr);
+        free(substr);
+        if (!s) return NULL;
+        tData strNode = newNodeStrHard(s);
+        freeStr(&s);
+        return strNode;
+    }
+}
+
+tData parseTree(const char* str) {
+    if (!str) return NULL;
+    int pos = 0;
+    tData root = parseElement(str, &pos);
+    if (!root) return NULL;
+    while (str[pos] == ' ' || str[pos] == '\t' || str[pos] == '\n') pos++;
+    if (str[pos] != '\0') {
+        free_tData(root);
+        return NULL;
+    }
+    return root;
 }

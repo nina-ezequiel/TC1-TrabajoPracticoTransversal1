@@ -1,17 +1,17 @@
 #include "String.h"
 
 // Crea un nuevo nodo
-str crearNodo(char c) {
-	str nvo = (str)malloc(sizeof(T_nodo));
+Str crearNodo(char c) {
+	Str nvo = (Str)malloc(sizeof(T_nodo));
 	nvo->car = c;
 	nvo->next = NULL;
 	return nvo;
 }
 
 // libera memoria
-void freeStr(str *s) {
+void freeStr(Str *s) {
 	while (*s != NULL) {
-		str cop = *s;
+		Str cop = *s;
 		*s = (*s)->next;
 		free(cop);
 	}
@@ -19,17 +19,17 @@ void freeStr(str *s) {
 }
 
 // Crea cadena vacia
-str createStr() {
+Str createStr() {
 	return NULL;
 }
 
 // Lee cadena desde teclado
-str loadStr() {
-	str ini = NULL;
-	str ult = NULL;
+Str loadStr() {
+	Str ini = NULL;
+	Str ult = NULL;
 	char c;
 	while ((c = getchar()) != '\n' && c != EOF) {
-		str nvo = crearNodo(c);
+		Str nvo = crearNodo(c);
 		if (ini == NULL) {
 			ini = nvo;
 			ult = nvo;
@@ -42,11 +42,11 @@ str loadStr() {
 }
 
 // Crea cadena desde const char*
-str loadStr2(const char* cadena) {
-	str ini = NULL;
-	str ult = NULL;
+Str loadStr2(const char* cadena) {
+	Str ini = NULL;
+	Str ult = NULL;
 	for (int i = 0; cadena[i] != '\0'; i++) {
-		str nvo = crearNodo(cadena[i]);
+		Str nvo = crearNodo(cadena[i]);
 		if (ini == NULL) {
 			ini = nvo;
 			ult = nvo;
@@ -59,9 +59,9 @@ str loadStr2(const char* cadena) {
 }
 
 // Muestra la cadena
-void printStr(str s) {
+void printStr(Str s) {
 	if(s != NULL){
-		str temp = s;
+		Str temp = s;
 		printf("\"");
 		while (temp != NULL) {
 			printf("%c", temp->car);
@@ -75,12 +75,12 @@ void printStr(str s) {
 }
 
 // Copia una cadena
-str copyStr(str s){
-	str ini = NULL;
-	str fin = NULL;
-	str temp = s;
+Str copyStr(Str s){
+	Str ini = NULL;
+	Str fin = NULL;
+	Str temp = s;
 	while(temp != NULL){
-		str nvo = crearNodo(temp->car);
+		Str nvo = crearNodo(temp->car);
 		if(ini == NULL){
 			ini = nvo;
 			fin = nvo;
@@ -95,9 +95,9 @@ str copyStr(str s){
 }
 	
 // Concatena dos cadenas
-str concatStr(str s1, str s2) {
-	str cop1 = copyStr(s1);
-	str cop2 = copyStr(s2);
+Str concatStr(Str s1, Str s2) {
+	Str cop1 = copyStr(s1);
+	Str cop2 = copyStr(s2);
 	if (cop1 == NULL && cop2 == NULL) {
 		return NULL;
 	}
@@ -107,7 +107,7 @@ str concatStr(str s1, str s2) {
 	if (cop2 == NULL) {
 		return cop1;
 	}
-	str temp = cop1;
+	Str temp = cop1;
 	while(temp->next != NULL){
 		temp = temp->next;
 	}
@@ -117,14 +117,14 @@ str concatStr(str s1, str s2) {
 }
 	
 // Parte antes del token
-str beforeToken(str s, char token) {
+Str beforeToken(Str s, char token) {
 	if (s == NULL) 
 		return NULL;
-	str temp = s;
-	str ini = NULL;
-	str ult = NULL;
+	Str temp = s;
+	Str ini = NULL;
+	Str ult = NULL;
 	while (temp != NULL && temp->car != token) {
-		str nvo = crearNodo(temp->car);
+		Str nvo = crearNodo(temp->car);
 		if (ini == NULL) {
 			ini = ult = nvo;
 		} 
@@ -141,10 +141,10 @@ str beforeToken(str s, char token) {
 }
 	
 // Parte despues del token
-str afterToken(str s, char token) {
+Str afterToken(Str s, char token) {
 	if (s == NULL) 
 		return NULL;
-	str temp = s;
+	Str temp = s;
 	while (temp != NULL && temp->car != token) {
 		temp = temp->next;
 	}
@@ -155,16 +155,16 @@ str afterToken(str s, char token) {
 }
 	
 // Verifica si s2 esta en s1
-int isinStr(str s1, str s2) {
+int isinStr(Str s1, Str s2) {
 	if (s2 == NULL) 
 		return 1;
 	if (s1 == NULL) 
 		return 0;
-	str temp = s1;
+	Str temp = s1;
 	while (temp != NULL) {
 		if (temp->car == s2->car) {
-			str ss1 = temp;
-			str ss2 = s2;
+			Str ss1 = temp;
+			Str ss2 = s2;
 			while (ss1 != NULL && ss2 != NULL && ss1->car == ss2->car) {
 				ss1 = ss1->next;
 				ss2 = ss2->next;
@@ -178,7 +178,7 @@ int isinStr(str s1, str s2) {
 }
 	
 // Verifica si s1 y s2 son iguales
-int equalStr(str s1,str s2){
+int equalStr(Str s1,Str s2){
 	if(isinStr(s1,s2) && isinStr(s2,s1))
 		return 1;
 	else
@@ -186,7 +186,7 @@ int equalStr(str s1,str s2){
 }
 	
 // Retorna tamanio del string
-int sizeStr(str s){
+int sizeStr(Str s){
 	int c = 0;
 	while(s != NULL){
 		c++;
@@ -201,6 +201,6 @@ void limpiarBuffer() {
 	while ((c = getchar()) != '\n' && c != EOF);
 }
 
-char str_getFirst(str s){
+char str_getFirst(Str s){
 	return s->car;
 }

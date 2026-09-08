@@ -1,3 +1,4 @@
+
 #include "AF.h"
 #include "AF_Operations.h"   // para reverseAF
 #include "AF_Converter.h"    // para getStateName, obtenerOCrearIndice (si se usan)
@@ -80,7 +81,12 @@ int main() {
     return 0;
 }
 
+
+
 /* ==================== FUNCIONES AUXILIARES DE CONSTRUCCIÓN ==================== */
+
+
+
 
 // Construye el AFD para cantidad impar de ceros (devuelve el AF, no imprime)
 Af construirAFD1() {
@@ -247,7 +253,11 @@ Af construirAFND2() {
     return afnd;
 }
 
+
+
 /* ==================== FUNCIONES DE EJEMPLO ORIGINALES ==================== */
+
+
 
 void ejemploAFD1() {
     Af afd = construirAFD1();
@@ -358,17 +368,22 @@ void ejemploConversionAFND2() {
     freeAF(afnd);
 }
 
+
+
+
 /* ==================== NUEVAS FUNCIONES PARA LOS INVERSOS ==================== */
 
+
+
 // Función auxiliar para invertir una cadena (str) y devolver una nueva str
-static str reverseStr(str s) {
+static Str reverseStr(Str s) {
     if (s == NULL) return NULL;
     // Contar longitud
     int len = 0;
-    str temp = s;
+    Str temp = s;
     while (temp != NULL) { len++; temp = temp->next; }
     // Construir nueva cadena al revés
-    str result = createStr();
+    Str result = createStr();
     temp = s;
     // Podemos insertar al principio o recorrer al final e ir añadiendo
     // Lo haremos con un arreglo dinámico de chars para simplificar
@@ -465,7 +480,7 @@ void ejemploReverseInteractivo() {
 
     printf("\n--- Prueba de aceptacion en el inverso ---\n");
     printf("Ingrese una cadena para evaluar (o Enter para saltar): ");
-    str s = loadStr();
+    Str s = loadStr();
     if (s != NULL) {
         int res = acceptString(inverso, s);
         printf("Cadena ");
@@ -476,6 +491,8 @@ void ejemploReverseInteractivo() {
     freeAF(inverso);
     freeAF(original);
 }
+
+
 
 /* 
 

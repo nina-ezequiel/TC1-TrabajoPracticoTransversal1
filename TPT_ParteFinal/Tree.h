@@ -2,6 +2,7 @@
 #define TREE_H
 
 #include "String.h"
+#include <string.h>
 
 #define STR 1 
 #define SET 2
@@ -10,7 +11,7 @@
 typedef struct dataType {
 	int nodeType;
 	union {
-		str str;
+		Str Str;
 		struct {
 			struct dataType* data; // Primer elemento (coleccion interna)
 			struct dataType* next; // Siguiente elemento en la coleccion
@@ -38,7 +39,7 @@ tData intersectionSet(tData set1, tData set2);			// Interseccion de dos conjunto
 tData differenceSet(tData set1, tData set2);			// Diferencia de conjuntos (A - B)
 int cardinalitySet(tData set);							// Devuelve la cantidad de elementos del conjunto
 tData removeFromSet(tData set, tData elemento);			// Elimina un elemento del conjunto
-tData newNodeStrHard(str valor);						// Crea nodo STR a partir de un string dado
+tData newNodeStrHard(Str valor);						// Crea nodo STR a partir de un string dado
 tData newEmptyNodeList();								// Crea LIST vacia
 tData newEmptyNodeSet();								// Crea SET vacio
 tData concatData(tData l1, tData l2);					// Concatena dos listas (retorna nueva lista)
@@ -49,12 +50,14 @@ tData strToList(tData str);								// Conversion STR -> LIST
 tData listToStr(tData list);							// Conversion LIST -> STR
 tData strToSet(tData str);								// Conversion STR -> SETtData setToStr(tData set);								
 tData setToStr(tData set);								// Conversion SET -> STR
-tData strToSetToken(str s, char token);   
+tData strToSetToken(Str s, char token);   
 
 int tData_getType(tData d);               				// obtiene nodeType
-str tData_getStr(tData d);                				// obtiene el string si es STR
+Str tData_getStr(tData d);                				// obtiene el string si es STR
 tData tData_getFirst(tData d);            				// primer elemento de LIST/SET
 tData tData_getNext(tData d);            				// siguiente elemento en la lista
 void tData_addToSet(tData set, tData elem); 			// agrega elem al conjunto set
+
+tData parseTree(const char* str);
 
 #endif
