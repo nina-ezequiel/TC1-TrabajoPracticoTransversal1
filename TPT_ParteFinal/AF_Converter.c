@@ -26,13 +26,13 @@ Str getStateName(int id) {
 }
 
 /* ------------------------------------------------------------
-* Inicializa los arreglos subConjuntos y estadosAFD con el subconjunto inicial {q0_nd}.
+* Inicializa los arreglos subSets y statesAFD con el subconjunto inicial {q0_nd}.
 * ------------------------------------------------------------ */
-static void initializeAuxArr(Af afd, const Af afnd, tData** subConjuntos, tData** estadosAFD, int* numConjuntos) {
+static void initializeAuxArr(Af afd, const Af afnd, tData** subSets, tData** statesAFD, int* numConjuntos) {
 	tData startSet = newEmptyNodeSet();
 	tData_addToSet(startSet, copy_tData(getInitial(afnd)));
-	*subConjuntos = (tData*)realloc(*subConjuntos, sizeof(tData));
-	(*subConjuntos)[0] = startSet;
+	*subSets = (tData*)realloc(*subSets, sizeof(tData));
+	(*subSets)[0] = startSet;
 	*numConjuntos = 1;
 	
 	Str name0 = getStateName(0);
@@ -40,8 +40,8 @@ static void initializeAuxArr(Af afd, const Af afnd, tData** subConjuntos, tData*
 	freeStr(&name0);
 	AF_addState(afd, state0);
 	AF_setInitial(afd, state0);
-	*estadosAFD = (tData*)realloc(*estadosAFD, sizeof(tData));
-	(*estadosAFD)[0] = state0;
+	*statesAFD = (tData*)realloc(*statesAFD, sizeof(tData));
+	(*statesAFD)[0] = state0;
 }
 
 /* ============================================================
@@ -71,22 +71,22 @@ tData reachableStates(const Af af, tData currentStates, Symbol sym) {
 /* ------------------------------------------------------------
 * Busca o aniade un destSet en los arreglos.
 * ------------------------------------------------------------ */
-int getOrcreate_Index(Af afd, tData destSet, tData** subConjuntos, tData** estadosAFD, int* numConjuntos) {
+int getOrcreate_Index(Af afd, tData destSet, tData** subSets, tData** statesAFD, int* numConjuntos) {
 	for (int k = 0; k < *numConjuntos; k++) {
-		if (equal_tData((*subConjuntos)[k], destSet))
+		if (equal_tData((*subSets)[k], destSet))
 			return k;
 	}
 	int idx = *numConjuntos;
-	*subConjuntos = (tData*)realloc(*subConjuntos, (idx + 1) * sizeof(tData));
-	(*subConjuntos)[idx] = destSet;
+	*subSets = (tData*)realloc(*subSets, (idx + 1) * sizeof(tData));
+	(*subSets)[idx] = destSet;
 	(*numConjuntos)++;
 	
 	Str newName = getStateName(idx);
 	tData newState = newNodeStrHard(newName);
 	freeStr(&newName);
 	AF_addState(afd, newState);
-	*estadosAFD = (tData*)realloc(*estadosAFD, *numConjuntos * sizeof(tData));
-	(*estadosAFD)[idx] = newState;
+	*statesAFD = (tData*)realloc(*statesAFD, *numConjuntos * sizeof(tData));
+	(*statesAFD)[idx] = newState;
 	
 	return idx;
 }
@@ -95,9 +95,9 @@ int getOrcreate_Index(Af afd, tData destSet, tData** subConjuntos, tData** estad
 * Agrega una transicion al AFD desde currentState con simbolo sigmaNode
 * hacia el estado con indice destIdx.
 * ------------------------------------------------------------ */
-static void addTransitionAFD(Af afd, tData currentState, tData sigmaNode, int destIdx, tData* estadosAFD) {
+static void addTransitionAFD(Af afd, tData currentState, tData sigmaNode, int destIdx, tData* statesAFD) {
 	tData unit = newEmptyNodeSet();
-	tData_addToSet(unit, copy_tData(estadosAFD[destIdx]));
+	tData_addToSet(unit, copy_tData(statesAFD[destIdx]));
 	AF_addTransition(afd, currentState, sigmaNode, unit);
 	free_tData(unit);
 }
@@ -107,11 +107,11 @@ static void addTransitionAFD(Af afd, tData currentState, tData sigmaNode, int de
 * contiene al menos un estado final del AFND.
 * Se usa intersectionSet para comprobar si la interseccion no es vacia.
 * ------------------------------------------------------------ */
-static void dialFinalsAFD(Af afd, const Af afnd, tData* subConjuntos, tData* estadosAFD, int numConjuntos) {
+static void dialFinalsAFD(Af afd, const Af afnd, tData* subSets, tData* statesAFD, int numConjuntos) {
 	for (int i = 0; i < numConjuntos; i++) {
-		tData inter = intersectionSet(subConjuntos[i], getFinals(afnd));
+		tData inter = intersectionSet(subSets[i], getFinals(afnd));
 		if (inter != NULL && tData_getFirst(inter) != NULL) {
-			AF_addFinal(afd, estadosAFD[i]);
+			AF_addFinal(afd, statesAFD[i]);
 		}
 		free_tData(inter);  // Liberamos siempre, intersectionSet puede devolver NULL o un conjunto
 	}
@@ -120,13 +120,13 @@ static void dialFinalsAFD(Af afd, const Af afnd, tData* subConjuntos, tData* est
 /* ------------------------------------------------------------
 * Libera la memoria de los arreglos auxiliares.
 * ------------------------------------------------------------ */
-static void freeArr(tData* subConjuntos, tData* estadosAFD, int numConjuntos) {
+static void freeArr(tData* subSets, tData* statesAFD, int numConjuntos) {
 	for (int i = 0; i < numConjuntos; i++) {
-		free_tData(subConjuntos[i]);
-		free_tData(estadosAFD[i]);
+		free_tData(subSets[i]);
+		free_tData(statesAFD[i]);
 	}
-	free(subConjuntos);
-	free(estadosAFD);
+	free(subSets);
+	free(statesAFD);
 }
 
 /* ============================================================
@@ -139,26 +139,26 @@ Af AFNDtoAFD(const Af afnd) {
 	Af afd = newEmptyAFDwithAlf(afnd);
 	if (!afd) return NULL;
 	
-	tData* subConjuntos = NULL;
-	tData* estadosAFD = NULL;
+	tData* subSets = NULL;
+	tData* statesAFD = NULL;
 	int numConjuntos = 0;
-	initializeAuxArr(afd, afnd, &subConjuntos, &estadosAFD, &numConjuntos);
+	initializeAuxArr(afd, afnd, &subSets, &statesAFD, &numConjuntos);
 	
 	for (int i = 0; i < numConjuntos; i++) {
-		tData currentSet = subConjuntos[i];
-		tData currentState = estadosAFD[i];
+		tData currentSet = subSets[i];
+		tData currentState = statesAFD[i];
 		tData sigmaNode = tData_getFirst(getAlphabet(afnd));
 		while (sigmaNode) {
 			tData destSet = reachableStates(afnd, currentSet, sigmaNode);
 			if (destSet != NULL) {
-				int idx = getOrcreate_Index(afd, destSet, &subConjuntos, &estadosAFD, &numConjuntos);
-				addTransitionAFD(afd, currentState, sigmaNode, idx, estadosAFD);
+				int idx = getOrcreate_Index(afd, destSet, &subSets, &statesAFD, &numConjuntos);
+				addTransitionAFD(afd, currentState, sigmaNode, idx, statesAFD);
 			}
 			sigmaNode = tData_getNext(sigmaNode);
 		}
 	}	
-	dialFinalsAFD(afd, afnd, subConjuntos, estadosAFD, numConjuntos);
-	freeArr(subConjuntos, estadosAFD, numConjuntos);
+	dialFinalsAFD(afd, afnd, subSets, statesAFD, numConjuntos);
+	freeArr(subSets, statesAFD, numConjuntos);
 
 	return afd;
 }
