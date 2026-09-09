@@ -385,8 +385,7 @@ static Str reverseStr(Str s) {
     // Construir nueva cadena al revés
     Str result = createStr();
     temp = s;
-    // Podemos insertar al principio o recorrer al final e ir añadiendo
-    // Lo haremos con un arreglo dinámico de chars para simplificar
+
     char* arr = (char*)malloc((len + 1) * sizeof(char));
     int i = 0;
     while (temp != NULL) { arr[i++] = temp->car; temp = temp->next; }

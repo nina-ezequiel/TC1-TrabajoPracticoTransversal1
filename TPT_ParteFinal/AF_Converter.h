@@ -8,7 +8,7 @@
 // Retorna NULL si hay error.
 Af AFNDtoAFD(const Af afnd);
 
-// Calcula el conjunto de estados alcanzables desde un conjunto dado con un s�mbolo.
+// Calcula el conjunto de estados alcanzables desde un conjunto dado con un simbolo.
 // Retorna un nuevo conjunto (tData) o NULL si no hay transiciones.
 tData reachableStates(const Af af, tData currentStates, Symbol sym);
 
