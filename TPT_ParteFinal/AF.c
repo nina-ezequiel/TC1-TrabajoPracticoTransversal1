@@ -137,7 +137,7 @@ static int acceptRecursive(const Af af, tData currentStates, Str string) {
 	}
 	char symBuf[2] = {str_getFirst(string), '\0'};
 	Symbol sym = newNodeStrHard(loadStr2(symBuf));
-	tData possibleStates = computeStates(af, currentStates, sym);
+	tData possibleStates = reachableStates(af, currentStates, sym);
 	free_tData(sym);
 	int result = acceptRecursive(af, possibleStates, string->next);
 	free_tData(possibleStates);

@@ -222,7 +222,7 @@ Af reverseAF(const Af af) {
     int setCount = 0;
 
     tData initialSet = copy_tData(F);
-    int initIdx = obtenerOCrearIndice(afd, initialSet, &sets, &stateNames, &setCount);
+    int initIdx = getOrcreate_Index(afd, initialSet, &sets, &stateNames, &setCount);
     AF_setInitial(afd, stateNames[initIdx]);
 
     for (int i = 0; i < setCount; i++) {
@@ -233,7 +233,7 @@ Af reverseAF(const Af af) {
         while (symNode) {
             tData predSet = predecessorStates(af, currentSet, symNode);
             if (predSet != NULL) {
-                int destIdx = obtenerOCrearIndice(afd, predSet, &sets, &stateNames, &setCount);
+                int destIdx = getOrcreate_Index(afd, predSet, &sets, &stateNames, &setCount);
                 tData destSet = newEmptyNodeSet();
                 tData_addToSet(destSet, copy_tData(stateNames[destIdx]));
                 AF_addTransition(afd, currentState, symNode, destSet);

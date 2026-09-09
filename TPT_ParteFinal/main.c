@@ -1,7 +1,7 @@
 
 #include "AF.h"
 #include "AF_Operations.h"   // para reverseAF
-#include "AF_Converter.h"    // para getStateName, obtenerOCrearIndice (si se usan)
+#include "AF_Converter.h"    // para getStateName, getOrcreate_Index (si se usan)
 
 // Prototipos de las funciones auxiliares de construcción
 Af construirAFD1();
